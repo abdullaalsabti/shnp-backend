@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using WebApplication1.Data.Entities;
 using WebApplication1.Dto;
 
 namespace WebApplication1.Controllers;
@@ -36,5 +37,20 @@ public class ProfileController : ControllerBase
         if (user == null) return NotFound(new { error = "User Not Found in Token" });
 
         return Ok(new MeDto(user));
+    }
+
+    [HttpGet("restaurantCount", Name = "GetRestaurantCount")]
+    public async Task<ActionResult<RestaurantCount>> GetRestaurantCount()
+    {
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+        if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized(new { error = "User ID Not Found in Token" });
+
+        if (!int.TryParse(userIdClaim, out var userId)) return Unauthorized(new { error = "User ID Invalid in Token" });
+
+        var data = await _contextEf.ResaurantCounts.FirstOrDefaultAsync(rc => rc.UserId == userId);
+
+        if (data == null) return NotFound(new { error = "User Not Found in Token" });
+
+        return Ok(data);
     }
 }

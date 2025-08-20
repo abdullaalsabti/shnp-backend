@@ -4,9 +4,10 @@ public class Document
 {
     public int UserId { get; set; }
     public int DocumentId { get; set; }
-    public string DocumentTypeCode { get; set; } = string.Empty;
+
 
     //Navigation Property(s):
+    public DocumentType DocumentType { get; set; } = new();
     public ICollection<DocumentUrl> Urls { get; set; } = new List<DocumentUrl>();
 }
 
@@ -17,10 +18,4 @@ public class DocumentUrl
     public string Url { get; set; } = string.Empty;
 
     public Document Document { get; set; }
-}
-
-public class DocumentDto
-{
-    public string DocumentTypeCode { get; set; } = string.Empty;
-    public List<string> DocumentUrls { get; set; } = new();
 }

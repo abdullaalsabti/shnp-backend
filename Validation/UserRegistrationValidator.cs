@@ -4,7 +4,7 @@ using WebApplication1.Dto;
 
 namespace WebApplication1.Validation;
 
-public class UserRegistrationValidator : AbstractValidator<UserForRegistration>
+public class UserRegistrationValidator : AbstractValidator<UserForRegistrationDto>
 {
     public UserRegistrationValidator()
     {

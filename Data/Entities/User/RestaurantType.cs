@@ -6,5 +6,5 @@ public class RestaurantType
     public string Name { get; set; } = string.Empty;
 
     //Back reference:
-    public ICollection<User> Users { get; set; } = new List<User>();
+    public ICollection<Restaurant> Users { get; set; } = new List<Restaurant>();
 }

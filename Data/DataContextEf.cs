@@ -17,10 +17,13 @@ public class DataContextEf : DbContext
     public DbSet<UserAuth> UserAuth { get; set; }
     public DbSet<RefreshToken> RefreshToken { get; set; }
     public DbSet<RestaurantType> RestaurantTypes { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<Restaurant> Users { get; set; }
     public DbSet<Document> Documents { get; set; }
     public DbSet<DocumentUrl> DocumentUrls { get; set; }
     public DbSet<WorkingDetail> WorkingDetails { get; set; }
+    public DbSet<RestaurantCount> ResaurantCounts { get; set; }
+
+    public DbSet<DocumentType> DocumentTypeCodes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -32,25 +35,7 @@ public class DataContextEf : DbContext
     {
         modelBuilder.HasDefaultSchema("TutorialShnp");
 
-        modelBuilder.Entity<UserAuth>().ToTable("UserAuth", "TutorialShnp").HasKey(u => u.UserId);
-        modelBuilder.Entity<UserAuth>().HasIndex(u => u.Email).IsUnique();
-
-        modelBuilder.Entity<RefreshToken>().ToTable("RefreshToken", "TutorialShnp").HasKey(u => u.TokenId);
-
-        modelBuilder.Entity<RestaurantType>().ToTable("RestaurantTypes", "TutorialShnp").HasKey(u => u.TypeId);
-        modelBuilder.Entity<RestaurantType>().HasIndex(rt => rt.Name).IsUnique();
-        modelBuilder.Entity<RestaurantType>().HasData(
-            new RestaurantType { TypeId = 1, Name = "Fast Food" },
-            new RestaurantType { TypeId = 2, Name = "Fine Dining" },
-            new RestaurantType { TypeId = 3, Name = "Arabic" }
-        );
-
-        modelBuilder.Entity<User>().ToTable("Users", "TutorialShnp").HasKey(u => u.UserId);
-
-        modelBuilder.Entity<Document>().ToTable("Documents", "TutorialShnp").HasKey(u => u.DocumentId);
-        modelBuilder.Entity<DocumentUrl>().ToTable("DocumentUrls", "TutorialShnp").HasKey(u => u.UrlId);
-
-        modelBuilder.Entity<WorkingDetail>().ToTable("WorkingDetails", "TutorialShnp").HasKey(u => u.WorkingDetailId);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContextEf).Assembly);
 
         //many-to-many: Restaurant <=> RestaurantType
         // modelBuilder.Entity<User>().HasMany(r => r.RestaurantTypes).WithMany(rt => rt.Users);
