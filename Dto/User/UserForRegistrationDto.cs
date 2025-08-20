@@ -2,7 +2,7 @@ using WebApplication1.Data.Entities;
 
 namespace WebApplication1.Dto;
 
-public class UserForRegistration
+public class UserForRegistrationDto
 {
     // Login / Security
     public string Email { get; set; } = string.Empty;

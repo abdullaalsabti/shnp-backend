@@ -4,7 +4,7 @@ namespace WebApplication1.Dto;
 
 public class MeDto
 {
-    public MeDto(User u)
+    public MeDto(Restaurant u)
     {
         UserId = u.UserId;
         NameEn = u.NameEn;
@@ -17,9 +17,10 @@ public class MeDto
         InstagramSocialMediaLink = u.InstagramSocialMediaLink;
 
         foreach (var doc in u.Documents)
+
             Documents.Add(new DocumentDto
             {
-                DocumentTypeCode = doc.DocumentTypeCode,
+                DocumentTypeCode = doc.DocumentType.TypeCode.ToString(),
                 DocumentUrls = doc.Urls.Select(url => url.Url).ToList()
             });
     }

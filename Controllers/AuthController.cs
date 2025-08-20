@@ -26,10 +26,10 @@ public class AuthController : ControllerBase
     //TODO: REGISTER
     [AllowAnonymous]
     [HttpPost("Register", Name = "Register")]
-    public async Task<ActionResult> RegisterNewUser([FromBody] UserForRegistration userForRegistration)
+    public async Task<ActionResult> RegisterNewUser([FromBody] UserForRegistrationDto userForRegistrationDto)
     {
         var validator = new UserRegistrationValidator();
-        var validationResult = await validator.ValidateAsync(userForRegistration);
+        var validationResult = await validator.ValidateAsync(userForRegistrationDto);
         if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
         // Hash password
@@ -39,14 +39,14 @@ public class AuthController : ControllerBase
             rng.GetBytes(salt);
         }
 
-        var passwordHash = _authHelper.GetPasswordHash(userForRegistration.Password, salt);
+        var passwordHash = _authHelper.GetPasswordHash(userForRegistrationDto.Password, salt);
 
-        var exists = await _contextEf.UserAuth.AnyAsync(u => u.Email == userForRegistration.Email);
+        var exists = await _contextEf.UserAuth.AnyAsync(u => u.Email == userForRegistrationDto.Email);
         if (exists) return BadRequest("Email already exists");
 
         var authEntity = new UserAuth
         {
-            Email = userForRegistration.Email,
+            Email = userForRegistrationDto.Email,
             PasswordHash = passwordHash,
             PasswordSalt = salt,
             CreatedAt = DateTime.UtcNow
@@ -54,7 +54,7 @@ public class AuthController : ControllerBase
         _contextEf.UserAuth.Add(authEntity);
 
         // Create User entity
-        var user = Data.Entities.User.CreateFromRegistration(userForRegistration, _contextEf);
+        var user = Restaurant.CreateFromRegistration(userForRegistrationDto, _contextEf);
 
         _contextEf.Users.Add(user);
 
@@ -73,13 +73,13 @@ public class AuthController : ControllerBase
     //TODO: LOGIN
     [AllowAnonymous]
     [HttpPost("Login", Name = "Login")]
-    public async Task<ActionResult> Login([FromBody] UserForLogin userForLogin)
+    public async Task<ActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
     {
-        var user = await _contextEf.UserAuth.FirstOrDefaultAsync(u => u.Email == userForLogin.Email);
+        var user = await _contextEf.UserAuth.FirstOrDefaultAsync(u => u.Email == userForLoginDto.Email);
         if (user == null) return BadRequest("User not found");
 
         var salt = user.PasswordSalt;
-        var createdHash = _authHelper.GetPasswordHash(userForLogin.Password, salt);
+        var createdHash = _authHelper.GetPasswordHash(userForLoginDto.Password, salt);
         var storedHash = user.PasswordHash;
 
 

@@ -2,7 +2,7 @@ using WebApplication1.Dto;
 
 namespace WebApplication1.Data.Entities;
 
-public class User
+public class Restaurant
 {
     public int UserId { get; set; }
     public string NameEn { get; set; } = string.Empty;
@@ -32,10 +32,12 @@ public class User
     public ICollection<Document> Documents { get; set; } = new List<Document>();
     public ICollection<WorkingDetail> WorkingDetails { get; set; } = new List<WorkingDetail>();
 
+    public RestaurantCount RestaurantCount { get; set; } = new();
 
-    public static User CreateFromRegistration(UserForRegistration u, DataContextEf contextEf)
+
+    public static Restaurant CreateFromRegistration(UserForRegistrationDto u, DataContextEf contextEf)
     {
-        var user = new User
+        var user = new Restaurant
         {
             NameEn = u.NameEn,
             NameAr = u.NameAr,
@@ -70,11 +72,17 @@ public class User
         // Add Documents
         foreach (var docDto in u.Documents)
         {
+            var documentType = contextEf.DocumentTypeCodes.FirstOrDefault(tc => tc.TypeCode == docDto.DocumentTypeCode);
+            if (documentType == null) continue;
             var document = new Document
             {
-                DocumentTypeCode = docDto.DocumentTypeCode,
-                Urls = docDto.DocumentUrls.Select(url => new DocumentUrl { Url = url }).ToList()
+                DocumentType = documentType,
+                Urls = docDto.DocumentUrls.Select(url => new DocumentUrl
+                {
+                    Url = url
+                }).ToList()
             };
+            Console.WriteLine($"document: {document.DocumentType}");
             user.Documents.Add(document); // This ensures proper tracking
         }
 
