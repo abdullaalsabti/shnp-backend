@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Data.Entities;
 using WebApplication1.Dto;
+using WebApplication1.Enums;
+using WebApplication1.Utils;
 
 namespace WebApplication1.Controllers;
 
@@ -22,12 +24,11 @@ public class ProfileController : ControllerBase
     [HttpGet("me", Name = "GetMe")]
     public async Task<ActionResult<MeDto>> GetMe()
     {
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+        var userIdClaim = UserUtils.GetInfoFromClaim(User, nameof(ClaimsEnum.Id).ToLower());
         if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized(new { error = "User ID Not Found in Token" });
-
         if (!int.TryParse(userIdClaim, out var userId)) return Unauthorized(new { error = "User ID Invalid in Token" });
 
-        var user = await _contextEf.Users.Include(u => u.Documents)
+        var user = await _contextEf.Restaurants.Include(u => u.Documents)
             .ThenInclude(d => d.Urls)
             .Include(u => u.WorkingDetails)
             .Include(u => u.RestaurantTypes)
@@ -42,9 +43,8 @@ public class ProfileController : ControllerBase
     [HttpGet("restaurantCount", Name = "GetRestaurantCount")]
     public async Task<ActionResult<RestaurantCount>> GetRestaurantCount()
     {
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+        var userIdClaim = UserUtils.GetInfoFromClaim(User, nameof(ClaimsEnum.Id).ToLower());
         if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized(new { error = "User ID Not Found in Token" });
-
         if (!int.TryParse(userIdClaim, out var userId)) return Unauthorized(new { error = "User ID Invalid in Token" });
 
         var data = await _contextEf.ResaurantCounts.FirstOrDefaultAsync(rc => rc.UserId == userId);

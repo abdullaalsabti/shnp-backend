@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data.Entities;
+using WebApplication1.Data.Entities.Random;
 
 namespace WebApplication1.Data;
 
@@ -17,13 +18,13 @@ public class DataContextEf : DbContext
     public DbSet<UserAuth> UserAuth { get; set; }
     public DbSet<RefreshToken> RefreshToken { get; set; }
     public DbSet<RestaurantType> RestaurantTypes { get; set; }
-    public DbSet<Restaurant> Users { get; set; }
+    public DbSet<Restaurant> Restaurants { get; set; }
     public DbSet<Document> Documents { get; set; }
     public DbSet<DocumentUrl> DocumentUrls { get; set; }
     public DbSet<WorkingDetail> WorkingDetails { get; set; }
     public DbSet<RestaurantCount> ResaurantCounts { get; set; }
-
     public DbSet<DocumentType> DocumentTypeCodes { get; set; }
+    public DbSet<Club> Clubs { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

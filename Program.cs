@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache(opts => { opts.TrackStatistics = true; });
 
 var tokenKey =
     new SymmetricSecurityKey(
@@ -73,6 +74,7 @@ else
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseMiddleware<RequestTimingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
