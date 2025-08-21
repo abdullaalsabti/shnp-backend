@@ -8,6 +8,6 @@ public class RestaurantConfiguration : IEntityTypeConfiguration<Restaurant>
 {
     public void Configure(EntityTypeBuilder<Restaurant> builder)
     {
-        builder.ToTable("Users", "TutorialShnp").HasKey(u => u.UserId);
+        builder.ToTable("Restaurants", "TutorialShnp").HasKey(u => u.UserId);
     }
 }

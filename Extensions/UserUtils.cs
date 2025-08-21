@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using WebApplication1.Data.Entities;
 using WebApplication1.Dto;
@@ -13,5 +14,10 @@ public static class UserUtils
         var mapper = config.CreateMapper();
         var user = mapper.Map<UserForRegistrationDto, Restaurant>(userForRegistrationDto);
         return user;
+    }
+
+    public static string? GetInfoFromClaim(ClaimsPrincipal user, string claimType)
+    {
+        return user.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
     }
 }

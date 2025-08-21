@@ -56,7 +56,7 @@ public class AuthController : ControllerBase
         // Create User entity
         var user = Restaurant.CreateFromRegistration(userForRegistrationDto, _contextEf);
 
-        _contextEf.Users.Add(user);
+        _contextEf.Restaurants.Add(user);
 
         var affectedRows = await _contextEf.SaveChangesAsync();
         return affectedRows > 0

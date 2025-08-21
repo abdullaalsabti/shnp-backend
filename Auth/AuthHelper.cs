@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
+using WebApplication1.Enums;
 
 namespace WebApplication1.Auth;
 
@@ -35,7 +36,7 @@ public class AuthHelper
     {
         var claims = new[]
         {
-            new Claim("id", userId.ToString())
+            new Claim(nameof(ClaimsEnum.Id).ToLower(), userId.ToString())
         };
 
         var tokenByteArray = Encoding.UTF8.GetBytes(_configuration.GetSection("AuthorizationSettings:TokenKey").Value!);
